@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>鏡平 134．我與 AI 共創校慶海報 — 學生資源站</title>
+<style>
+  :root{
+    --red:#B3131B;        /* 校徽主紅 */
+    --red-dark:#7E0E13;
+    --gold:#C9A227;       /* 校徽金 */
+    --gold-light:#EBD48A;
+    --ink:#2B2320;        /* 校徽墨 */
+    --paper:#FBF6EC;      /* 米白紙色 */
+    --paper-deep:#F4EBD6;
+    --line:#E3D7BB;
+    --ok:#2E7D4F;
+    --warn:#B8860B;
+    --bad:#B3131B;
+    --card:#FFFFFF;
+    --shadow:0 2px 12px rgba(43,35,32,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.7;
+    font-size:16px;
+  }
+  /* ===== 頂欄 ===== */
+  header{
+    background:linear-gradient(135deg,var(--red) 0%,var(--red-dark) 100%);
+    color:#fff;
+    padding:22px 0 18px;
+    text-align:center;
+    position:sticky;top:0;z-index:50;
+    box-shadow:0 2px 12px rgba(0,0,0,.18);
+  }
+  header .wrap{max-width:980px;margin:0 auto;padding:0 20px}
+  header h1{font-size:26px;letter-spacing:2px;display:flex;align-items:center;justify-content:center;gap:12px}
+  header h1 img{height:44px;width:auto;border-radius:6px}
+  header .sub{font-size:14px;color:var(--gold-light);margin-top:4px;letter-spacing:1px}
+  header .tagline{font-size:16px;color:var(--gold-light);font-weight:600;letter-spacing:.5px;margin-top:8px}
+  nav{
+    display:flex;flex-wrap:wrap;justify-content:center;gap:6px;
+    margin-top:14px;
+  }
+  nav a{
+    color:#fff;text-decoration:none;font-size:13px;
+    background:rgba(255,255,255,.14);
+    padding:6px 12px;border-radius:20px;transition:.2s;
+  }
+  nav a:hover{background:rgba(255,255,255,.3)}
+  /* ===== 主體 ===== */
+  main{max-width:980px;margin:0 auto;padding:26px 20px 80px}
+  section{margin-bottom:44px;scroll-margin-top:120px}
+  h2{
+    font-size:22px;color:var(--red);
+    border-left:6px solid var(--gold);
+    padding-left:12px;margin-bottom:6px;
+  }
+  h2 .step{color:var(--gold);font-weight:800;margin-right:6px}
+  .sub{color:#6b5d4f;font-size:14px;margin-bottom:16px}
+  h3{font-size:17px;color:var(--red-dark);margin:20px 0 10px}
+  p{margin-bottom:10px}
+  .card{
+    background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:18px 20px;margin-bottom:16px;
+    box-shadow:var(--shadow);
+  }
+  .card > h3{
+    margin:0 0 12px;padding-bottom:9px;border-bottom:2px solid var(--paper-deep);
+  }
+  .card > h3:first-child{margin-top:0}
+  .tip{
+    background:var(--paper-deep);border-left:4px solid var(--gold);
+    border-radius:6px;padding:12px 16px;margin:12px 0;font-size:14px;
+  }
+  .tip b{color:var(--red-dark)}
+  .warn{
+    background:#FDF0EC;border-left:4px solid var(--bad);
+    border-radius:6px;padding:12px 16px;margin:12px 0;font-size:14px;
+  }
+  ul,ol{padding-left:24px;margin-bottom:10px}
+  li{margin-bottom:6px}
+  /* ===== 按鈕 ===== */
+  button{
+    font-family:inherit;cursor:pointer;border:none;
+    background:var(--red);color:#fff;font-size:14px;
+    padding:9px 18px;border-radius:8px;transition:.15s;
+  }
+  button:hover{background:var(--red-dark)}
+  button.ghost{background:#fff;color:var(--red);border:1.5px solid var(--red)}
+  button.ghost:hover{background:var(--paper-deep)}
+  button.copy{
+    background:var(--gold);color:#fff;
+  }
+  button.copy:hover{background:#a9881e}
+  button.copy.ok{background:var(--ok)}
+  /* ===== 元素選項庫（個人工作台） ===== */
+  .style-grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+    gap:12px;margin:14px 0;
+  }
+  .style-card{
+    border:2px solid var(--line);border-radius:12px;overflow:hidden;
+    cursor:pointer;transition:.15s;background:#fff;position:relative;
+  }
+  .style-card:hover{border-color:var(--gold)}
+  .style-card.on{border-color:var(--red);box-shadow:0 0 0 3px rgba(179,19,27,.15)}
+  .style-card img{width:100%;height:150px;object-fit:cover;display:block}
+  .style-card .sc-body{padding:10px 12px}
+  .style-card b{font-size:14px;color:var(--red-dark);display:block}
+  .style-card .sc-tag{font-size:12px;color:#6b5d4f}
+  .style-card .chk{color:var(--red);font-weight:800;float:right;visibility:hidden}
+  .style-card.on .chk{visibility:visible}
+  .dim-grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));
+    gap:14px;margin:14px 0;
+  }
+  .dim{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+  .dim label{display:block;font-weight:700;font-size:15px;color:var(--red-dark);margin-bottom:8px}
+  .dim label .d-no{color:var(--gold)}
+  .dim .hint{font-size:12px;color:#999;font-weight:400;margin-left:6px}
+  .dim select{
+    width:100%;padding:10px;font-size:15px;border:1.5px solid var(--line);
+    border-radius:8px;background:#fff;font-family:inherit;color:var(--ink);
+  }
+  .dim select:focus{outline:none;border-color:var(--gold)}
+  .dim select option.rec{color:var(--ok);font-weight:700}
+  .dim select option.warn{color:var(--warn)}
+  .dim select option.bad{color:var(--bad)}
+  /* ===== 和諧度預警 ===== */
+  #harmony{
+    border-radius:12px;padding:16px 20px;margin:16px 0;
+    font-size:15px;display:flex;align-items:flex-start;gap:14px;
+  }
+  #harmony .dot{
+    flex:0 0 auto;width:20px;height:20px;border-radius:50%;margin-top:3px;
+    background:#ccc;box-shadow:0 0 0 4px rgba(0,0,0,.05);
+  }
+  #harmony.green .dot{background:var(--ok);box-shadow:0 0 0 4px rgba(46,125,79,.18)}
+  #harmony.green{background:#EDF7F0;border:1px solid #B7DCC4}
+  #harmony.yellow .dot{background:var(--warn);box-shadow:0 0 0 4px rgba(184,134,11,.18)}
+  #harmony.yellow{background:#FDF6E3;border:1px solid #EAD9A8}
+  #harmony.red .dot{background:var(--bad);box-shadow:0 0 0 4px rgba(179,19,27,.18)}
+  #harmony.red{background:#FDF0EC;border:1px solid #F0C2BD}
+  #harmony .h-body b{display:block;margin-bottom:2px}
+  #harmony .h-body .h-msg{color:#4a4038;font-size:14px}
+  #harmony .h-body .h-why{font-size:13px;color:#8a7a64;margin-top:4px}
+  /* ===== 提示詞產出 ===== */
+  .prompt-out{
+    position:relative;background:#1E1B18;color:#F5EEDD;
+    border-radius:12px;padding:20px 22px;margin:14px 0;
+    font-family:"Consolas","Microsoft JhengHei",monospace;
+    font-size:14px;line-height:1.9;white-space:pre-wrap;word-break:break-all;
+  }
+  .prompt-out .plabel{color:var(--gold-light);font-family:inherit;font-weight:700}
+  .prompt-bar{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+  .tool-links{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13.5px;color:#8a7a64;margin:-2px 0 2px}
+  .tool-links a{color:var(--red);font-weight:700;text-decoration:none;border:1.5px solid var(--red);border-radius:16px;padding:4px 12px;font-size:13px;background:#fff;transition:.15s}
+  .tool-links a:hover{background:var(--red);color:#fff}
+
+  /* ============================================================
+     以下為 index（①–④）內容適配紅色系的補充樣式
+     ============================================================ */
+  .sec-head{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+  .sec-no{
+    flex:0 0 auto;width:44px;height:44px;border-radius:12px;
+    background:var(--red);color:var(--gold-light);
+    display:flex;align-items:center;justify-content:center;
+    font-size:20px;font-weight:700;
+  }
+  .sec-head h2{font-size:22px;margin:0;line-height:1.3;border-left:none;padding-left:0}
+  .sec-head .sub{font-size:13px;color:#8a7a64;margin:2px 0 0}
+  .hint{
+    background:var(--paper-deep);border-left:4px solid var(--gold);
+    border-radius:6px;padding:12px 16px;margin:12px 0;font-size:14px;
+  }
+  .hint b{color:var(--red-dark)}
+  .todo{
+    background:#FDF6E3;border:2px dashed var(--gold);border-radius:12px;
+    padding:16px 18px;margin:14px 0;font-size:15px;color:#7A5B00;
+  }
+  .todo strong{color:#8A6100}
+  /* 表格 */
+  .tbl-scroll{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:15px}
+  th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
+  th{background:var(--paper-deep);font-weight:700;color:var(--red-dark)}
+  tbody tr:nth-child(even){background:#FBF6EC}
+  /* 選項卡（校訓、絕句規則） */
+  .opt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin:12px 0}
+  .opt{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+  .opt b{display:block;color:var(--red-dark);font-size:15px;margin-bottom:6px}
+  .opt span{font-size:14px;color:#6b5d4f;line-height:1.7}
+  /* Word 技能檢核 */
+  .skill-list{list-style:none;padding:0;margin:12px 0}
+  .skill-item{
+    display:flex;align-items:flex-start;gap:11px;
+    padding:9px 14px;border:1.5px solid var(--line);border-radius:9px;
+    margin-bottom:7px;background:#fff;cursor:pointer;transition:.15s;
+  }
+  .skill-item:hover{border-color:var(--gold)}
+  .skill-item .box{
+    flex:0 0 21px;width:21px;height:21px;border:2px solid #CFC0A0;border-radius:6px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:13px;font-weight:800;color:#fff;margin-top:2px;transition:.15s;
+  }
+  .skill-item.done{border-color:var(--ok);background:#F2FAF5}
+  .skill-item.done .box{background:var(--ok);border-color:var(--ok)}
+  .skill-item.done .box::after{content:"✓"}
+  .skill-item .s-txt{font-size:14.5px;line-height:1.6}
+  .skill-item .s-txt b{color:var(--red-dark)}
+  .skill-item.done .s-txt b{color:var(--ok)}
+  .skill-item .s-note{display:block;font-size:12.5px;color:#8a7a64;margin-top:1px}
+  .skill-progress{
+    display:inline-block;background:var(--paper-deep);border:1.5px solid var(--line);
+    border-radius:20px;padding:6px 16px;font-size:14px;font-weight:700;
+    color:var(--red-dark);margin-top:4px;
+  }
+  .skill-progress.all{background:#EDF7F0;border-color:#B7DCC4;color:var(--ok)}
+  .skill-sub{font-size:14px;color:#6b5d4f;margin:16px 0 4px;font-weight:700}
+  /* 複製區塊 */
+  .copybox{position:relative;margin:14px 0}
+  .copybox .bar{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    background:var(--red);color:#fff;padding:8px 12px 8px 16px;
+    border-radius:12px 12px 0 0;font-size:14px;font-weight:600;
+  }
+  .copybox pre{
+    margin:0;background:#FBF6EC;border:1px solid var(--line);border-top:none;
+    border-radius:0 0 12px 12px;padding:16px;white-space:pre-wrap;word-break:break-word;
+    font-family:"Microsoft JhengHei","PingFang TC",sans-serif;font-size:15px;line-height:1.8;
+  }
+  .copy-btn{
+    flex:0 0 auto;cursor:pointer;border:none;border-radius:18px;
+    background:var(--gold);color:#fff;font-weight:700;font-size:13px;
+    padding:7px 16px;font-family:inherit;transition:.15s;
+  }
+  .copy-btn:hover{background:#a9881e}
+  .copy-box-select{background:var(--gold-light)!important;color:var(--ink)!important}
+  /* 時間軸 */
+  .tl{list-style:none;padding:0;margin:14px 0 0;position:relative}
+  .tl::before{content:"";position:absolute;left:66px;top:6px;bottom:6px;width:2px;background:var(--line)}
+  .tl li{position:relative;padding:0 0 16px 88px;min-height:30px}
+  .tl .yr{position:absolute;left:0;top:0;width:56px;text-align:right;font-weight:700;color:var(--red-dark);font-size:14px}
+  .tl .dot{position:absolute;left:60px;top:7px;width:14px;height:14px;border-radius:50%;background:var(--gold);border:3px solid #fff;box-shadow:0 0 0 1.5px var(--red)}
+  .tl .txt{font-size:15px}
+  /* 連結按鈕與來源 */
+  .btn-link{
+    display:inline-block;background:var(--red);color:#fff;text-decoration:none;
+    padding:11px 26px;border-radius:26px;font-weight:700;font-size:15px;
+    margin:6px 0 4px;transition:.15s;
+  }
+  .btn-link:hover{background:var(--red-dark)}
+  .src{font-size:12.5px;color:#8a7a64;margin-top:10px}
+  /* ===== 素材下載 ===== */
+  .asset-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin:14px 0}
+  .asset{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff;text-decoration:none;color:var(--ink);transition:.15s;display:block}
+  .asset:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+  .asset img{width:100%;height:110px;object-fit:cover;display:block}
+  .asset .meta{padding:8px 10px}
+  .asset b{font-size:13px;display:block;color:var(--red-dark)}
+  .asset span{font-size:11px;color:#999}
+  footer{background:var(--ink);color:#c9bfae;text-align:center;padding:22px 20px;font-size:13px;line-height:1.8}
+  @media (max-width:600px){
+    header h1{font-size:21px;flex-wrap:wrap}
+    .sec-head h2{font-size:19px}
+  }
+  @media print{
+    header,nav,button,.no-print{display:none!important}
+    body{background:#fff}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1><img src="assets/校徽.png" alt="鏡平學校校徽"> 鏡平 134．我與 AI 共創校慶海報</h1>
+    <div class="sub">P5 上學期跨學科專題活動 · 學生資源站（個人完成）</div>
+    <div class="tagline">「AI 什麼都能生成，那你的貢獻在哪裡？」</div>
+    <nav>
+      <a href="#start">① 任務啟動</a>
+      <a href="#history">② 走進鏡平 134</a>
+      <a href="#jueju">③ 絕句入門</a>
+      <a href="#poem">④ 生成詩句</a>
+      <a href="#poster">⑤ 生成海報底圖</a>
+      <a href="#route">⑥ 選你的風格</a>
+      <a href="#compose">⑦ 合成與評價</a>
+      <a href="#download">📁 素材下載</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ ① 任務啟動 ============ -->
+<section id="start">
+  <div class="sec-head">
+    <div class="sec-no">①</div>
+    <div>
+      <h2>任務啟動：你要做什麼？</h2>
+      <p class="sub">先看清楚全貌，再動手</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>三個步驟，一件作品</h3>
+    <div class="tbl-scroll">
+    <table>
+      <thead><tr><th style="width:80px">步驟</th><th>你要做的事</th><th style="width:150px">放進模板哪一頁</th></tr></thead>
+      <tbody>
+        <tr><td><b>第一部份</b></td><td>用 AI 生成一首慶祝鏡平校慶的詩（繁體中文、五言或七言絕句、共 4 句）</td><td>第 2 頁</td></tr>
+        <tr><td><b>第二部份</b></td><td>根據詩句的意境，用 AI 生成一幅海報底圖（直向 A3、<b>不要文字</b>、要留白）</td><td>第 3 頁</td></tr>
+        <tr><td><b>第三部份</b></td><td>用 Word 把底圖和詩句合成——插入圖片、設定「襯於文字下」、加上文字方塊，變成一張完整校慶海報</td><td>第 4 頁</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="hint">
+      <b>為什麼要分成三步？</b>因為 AI 畫圖時寫中文字經常會寫錯、出現亂碼。所以我們讓它只負責畫畫面，<b>文字由你親手加上去</b>——寫對字，是你的責任，也是這份功課最重要的一環。
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>要交兩件東西</h3>
+    <ol>
+      <li><b>校慶海報提交模板（Word 版）.docx</b>（5 頁都填好：封面資料、詩句＋提示詞、底圖＋提示詞、完成的海報、技能檢核）</li>
+      <li><b>最終完成的海報 PNG 圖片檔</b></li>
+    </ol>
+    <p style="margin-bottom:0">兩個檔案一起上傳到 <b>PL2 的「作業檔案提交」區</b>。</p>
+  </div>
+
+  <div class="card">
+    <h3>老師會看什麼？（評分四個面向）</h3>
+    <div class="tbl-scroll">
+    <table>
+      <thead><tr><th style="width:130px">面向</th><th>做到這些就是「優異」</th></tr></thead>
+      <tbody>
+        <tr><td><b>A 詩句創作</b></td><td>格式完全正確（4 句、五言或七言、押韻）；內容具體結合本校校史或校訓；意象鮮明、有個人特色</td></tr>
+        <tr><td><b>B 提示詞設計<br>與修改</b></td><td>提示詞四要素完整；參考資料具體；<b>有兩次以上方向明確的追問修改</b>；能說出每次修改的理由</td></tr>
+        <tr><td><b>C 海報畫面</b></td><td>主次分明、視線動線清楚；留白運用得當；文字與背景對比良好、易讀；整體和諧有節慶氣氛</td></tr>
+        <tr><td><b>D AI 素養<br>與責任</b></td><td>能準確指出 AI 的能力邊界並舉出補位做法；完整標註工具與資料來源；互評具體友善</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="hint">
+      <b>重點提醒：</b>「B 提示詞設計與修改」佔很重。<b>只生成一次就交的，分數不會高</b>——因為老師要看的是你<b>動了腦、改了東西</b>。每次追問都要在任務單上寫下「我改了什麼、為什麼改」。
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>四節課的流程</h3>
+    <div class="tbl-scroll">
+    <table>
+      <thead><tr><th style="width:90px">節次</th><th>主題</th><th>當節要完成</th></tr></thead>
+      <tbody>
+        <tr><td>第 1 節</td><td>走進鏡平 134</td><td>校史採集、認識絕句、認識海報視覺元素</td></tr>
+        <tr><td>第 2 節</td><td>生成詩句</td><td>寫提示詞、生成詩句、追問修改、貼進模板第 2 頁</td></tr>
+        <tr><td>第 3 節</td><td>生成海報底圖</td><td>畫面規劃、寫提示詞、生成 3 個版本、選圖、貼進第 3 頁</td></tr>
+        <tr><td>第 4 節</td><td>合成與評價</td><td>用 Word 合成（加詩句）、截圖存 PNG、標註來源、互相評賞、提交</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ② 走進鏡平 134 ============ -->
+<section id="history">
+  <div class="sec-head">
+    <div class="sec-no">②</div>
+    <div>
+      <h2>走進鏡平 134：校慶背景資料包</h2>
+      <p class="sub">寫詩、畫海報的素材都在這裡，可以直接複製給 AI</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>學校小檔案</h3>
+    <div class="tbl-scroll">
+    <table>
+      <tbody>
+        <tr><th style="width:150px">校名</th><td>澳門鏡平學校（Escola Keang Peng，簡稱 KP）</td></tr>
+        <tr><th>創校</th><td>1892 年，為<b>澳門辦校歷史最悠久的學校</b>；由鏡湖醫院慈善會興辦，前身為「鏡湖義塾」</td></tr>
+        <tr><th>校訓</th><td><b>誠、毅、精、博</b></td></tr>
+        <tr><th>學風</th><td>尊師、善學、求實、創新</td></tr>
+        <tr><th>教風</th><td>敬業愛生、科教育才</td></tr>
+        <tr><th>宗旨</th><td>愛國愛澳、服務社群</td></tr>
+        <tr><th>現況</th><td>中小幼一條龍學校，共 92 個教學班，學生逾 3,000 人</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>校史沿革（時間軸）</h3>
+    <ul class="tl">
+      <li><span class="yr">1892</span><span class="dot"></span><span class="txt">曹、周二姓善長捐出物業興辦義學，鏡湖醫院在澳門各區辦學塾，統稱「鏡湖義塾」</span></li>
+      <li><span class="yr">1911</span><span class="dot"></span><span class="txt">正式立案，改名為「鏡湖小學」</span></li>
+      <li><span class="yr">1924</span><span class="dot"></span><span class="txt">熱心人士許祥發起籌辦義學，創辦「平民小學」（共七所），並設女子夜校</span></li>
+      <li><span class="yr">1948</span><span class="dot"></span><span class="txt">慈善會董事何善衡捐出望廈地段，合力籌建新校舍</span></li>
+      <li><span class="yr">1949</span><span class="dot"></span><span class="txt">「鏡湖小學」與「平民小學」合併，組成「鏡湖平民聯合小學」，余倩嫻女士任校長，學生逾 1,500 人</span></li>
+      <li><span class="yr">1950</span><span class="dot"></span><span class="txt">新校舍落成啟用；同年何賢先生接任校長</span></li>
+      <li><span class="yr">1984</span><span class="dot"></span><span class="txt">何德明先生接任校長，學校與時並進，增設電腦及公民課</span></li>
+      <li><span class="yr">1990</span><span class="dot"></span><span class="txt">崔世安先生任校長，大力推動電化教學、改善環境與設備</span></li>
+      <li><span class="yr">1992</span><span class="dot"></span><span class="txt">小學原址改建為樓高四層的新校舍，正式改名為「<b>鏡平學校</b>」</span></li>
+      <li><span class="yr">1997</span><span class="dot"></span><span class="txt">位於黑沙環馬場大馬路的中學部落成啟用</span></li>
+      <li><span class="yr">1999</span><span class="dot"></span><span class="txt">黎世祺先生接任校長，推行多個六年發展規劃，引領學校高質量發展</span></li>
+      <li><span class="yr">2016</span><span class="dot"></span><span class="txt">望廈舊校址重建，樓高十層的教學大樓啟用；同年 10 月國務院總理李克強到訪</span></li>
+      <li><span class="yr">2025</span><span class="dot"></span><span class="txt">曾紀川先生擔任校長，秉持守正創新、服務社群，推動課程教學創新與家國情懷</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>校訓四個字，各是什麼意思？</h3>
+    <p>寫詩時把校訓的意思寫進去，詩就會很有「鏡平味」。以下整理自學校官網對校訓的解說：</p>
+    <div class="opt-grid">
+      <div class="opt"><b>誠</b><span>對自己誠實，言行一致，做老實人、說老實話、辦老實事；對別人真誠，以誠相待；對祖國忠誠，愛國愛澳愛校。</span></div>
+      <div class="opt"><b>毅</b><span>堅強的意志和毅力。學習和做事有堅定的目的性，鍥而不捨、知難而進、堅持到底、百折不撓。</span></div>
+      <div class="opt"><b>精</b><span>學習上精益求精。專心致志，有扎實深入的知識，掌握基本技能，逐步培養自學與動手操作能力。</span></div>
+      <div class="opt"><b>博</b><span>博學多才。在深入的基礎上向廣的方面發展，既掌握課本知識，也學習課堂以外的知識，做到既專且博。</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>辦學宗旨、目標與育人目標</h3>
+    <div class="copybox">
+      <div class="bar"><span>可直接複製給 AI 的參考資料</span>
+        <button class="copy-btn" data-target="c-philosophy">複製</button></div>
+      <pre id="c-philosophy">【澳門鏡平學校 辦學宗旨】
+堅持教育為澳門社會發展服務的方向，使受教育者能熱愛祖國，熱愛澳門，在德智體群美諸方面得到全面和諧的發展，為培養有理想、有道德、有知識、有能力、有健全體魄的人才奠定基礎。校訓為：誠、毅、精、博。
+
+【辦學目標】
+全面推進素質教育，實施現代教育技術環境下的創思教育，建立高效率的管理系統，建設高素質的師資隊伍，營造良好的校園文化，培養高素質的建設人才，把我校建設成澳門的一流學校。
+
+【育人目標】
+德育為首、智育為主、能力為重、全面發展、學有所長。
+
+【校訓釋義】
+誠：對自己誠實、言行一致；待人以誠；對祖國忠誠，愛國愛澳愛校。
+毅：有堅強意志與毅力，鍥而不捨、知難而進、百折不撓。
+精：學習上精益求精，專心致志，掌握扎實知識與基本技能。
+博：博學多才，既專且博，多才多藝。
+
+【近期發展與成就】
+．澳門辦校歷史最悠久的學校，創校於 1892 年，至今逾 130 年
+．中小幼一條龍，共 92 個教學班，學生逾 3,000 人
+．2018 年獲國內學科競賽網評為「500 強最佳學校」，並獲「500 強學校最佳校長獎」
+．2019 年獲香港《鏡報》評選為「學校社會責任獎」學校
+．近十年多次在國際 PISA 測試中位居澳門前列
+．大批畢業生獲保送至北京大學、清華大學、復旦大學等內地一流大學
+．2025 年學生團隊在世界青少年英才奧林匹克競賽榮獲 2 金 1 榮譽獎</pre>
+    </div>
+    <p class="src">資料來源：鏡平學校官網「學校沿革」「校訓-學風-教風」頁；澳門特區政府授勳文件（2025）；澳門記憶「鏡湖小學及平民小學史略」。校慶周年數依校方公布為 134 周年。</p>
+  </div>
+
+  <div class="card">
+    <h3>校歌歌詞</h3>
+    <p>校歌是鏡平人的精神旋律——歌詞裡的「誠毅精博求上進」，唱的就是校訓。想引用校歌精神寫詩時，就從這裡閱讀、複製。</p>
+    <div class="copybox" style="margin-top:12px">
+      <div class="bar"><span>鏡平學校校歌歌詞</span>
+        <button class="copy-btn" data-target="c-song">複製</button></div>
+      <pre id="c-song">黌宮屹立鏡海濱，萬千學子勤耕耘，
+陽光照耀我們要恪守校訓，我們熱愛祖國熱愛澳門，
+雨露滋潤，小苗茁壯桃李滿園，
+熱愛鏡平學校，誠毅精博求上進，
+做個素質全面的人，用我們智慧的頭腦，
+用我們勤勞的雙手，不怕困難，勇於攀登，
+繼承傳統，光大校譽，共同創造燦爛美好明天。</pre>
+    </div>
+    <p class="src">歌詞由學校提供。</p>
+  </div>
+
+  <div class="card">
+    <h3>自由選擇：你的探究方向是哪一個？</h3>
+    <p style="font-size:14px;color:#6b5d4f">以下是五個探究方向，你可以<b>任選一個（或多個）</b>深入研究——方向是給你靈感的，最後詩只寫一首。</p>
+    <div class="tbl-scroll">
+    <table>
+      <thead><tr><th style="width:80px">方向</th><th>探究題目</th><th style="width:230px">可以在哪裡找</th></tr></thead>
+      <tbody>
+        <tr><td><b>方向一</b></td><td>歷史沿革：學校從 1892 年走到今天</td><td>本頁時間軸、學校官網「學校沿革」</td></tr>
+        <tr><td><b>方向二</b></td><td>辦學理念與校訓「誠、毅、精、博」</td><td>本頁「辦學宗旨、目標與育人目標」</td></tr>
+        <tr><td><b>方向三</b></td><td>校歌（歌詞內容與精神）</td><td>本頁「校歌歌詞」</td></tr>
+        <tr><td><b>方向四</b></td><td>校園環境與特色（校舍、校徽、KP 娃娃）</td><td>本站素材下載區的校徽、校園照片、KP 娃娃</td></tr>
+        <tr><td><b>方向五</b></td><td>近年成就與校友發展</td><td>本頁「近期發展與成就」</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="hint">
+      <b>把你找到的 3–5 個關鍵詞寫進任務單的第一頁。</b>等一下寫提示詞時，這些關鍵詞就是你的「參考資料」——這是讓你的詩<b>不像別的同學</b>的關鍵。
+    </div>
+  </div>
+</section>
+
+<!-- ============ ③ 絕句入門 ============ -->
+<section id="jueju">
+  <div class="sec-head">
+    <div class="sec-no">③</div>
+    <div>
+      <h2>絕句入門：什麼是絕句？</h2>
+      <p class="sub">先懂規則，才知道要叫 AI 做什麼</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>四個規則，一個都不能少</h3>
+    <div class="opt-grid">
+      <div class="opt"><b>① 一共 4 句</b><span>多一句、少一句都不叫絕句。</span></div>
+      <div class="opt"><b>② 每句 5 字或 7 字</b><span>五言或七言，<b>全首要統一</b>，不能一句 5 字一句 7 字。</span></div>
+      <div class="opt"><b>③ 第 2、4 句押韻</b><span>第 2 句和第 4 句最後一個字，讀起來要相似。</span></div>
+      <div class="opt"><b>④ 要有畫面與感情</b><span>不是把資料堆上去，而是讓讀的人「看見」鏡平。</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>看看範例詩怎麼寫</h3>
+    <div class="copybox">
+      <div class="bar"><span>範例詩（僅供觀摩，你的詩要和它不一樣）</span>
+        <button class="copy-btn" data-target="c-sample-poem">複製</button></div>
+      <pre id="c-sample-poem">鏡映初心育棟樑，
+平章德藝潤方塘。
+誠毅精博傳薪火，
+桃李芬芳耀澳疆。</pre>
+    </div>
+    <div class="tbl-scroll">
+    <table>
+      <thead><tr><th style="width:180px">觀察點</th><th>拆解</th></tr></thead>
+      <tbody>
+        <tr><td>押韻的字</td><td><b>樑、塘、疆</b>——第 1、2、4 句句尾押韻（押韻愈穩，讀起來愈順）</td></tr>
+        <tr><td>藏頭</td><td>每句第一個字連起來是「<b>鏡平誠桃</b>」——第 1、2 句藏了校名「鏡平」</td></tr>
+        <tr><td>藏校訓</td><td>第 3 句「誠毅精博」直接把校訓四個字寫了進去</td></tr>
+        <tr><td>用典與意象</td><td>「育棟樑」指培育人才；「桃李」指學生；「薪火」指傳承——這些都是有意象的詞</td></tr>
+        <tr><td>結合校史</td><td>「鏡」取自鏡湖／鏡平，「澳疆」指向澳門——處處扣著學校與澳門</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="hint">
+      <b>你的詩不必和這首一樣，甚至可以比它更好。</b>全班三十幾人，老師要看的是<b>你的詩有什麼別人沒有的東西</b>——例如你用了你自己找到的那個校史細節。
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>寫完詩，用這五個問題檢查一次</h3>
+    <ol>
+      <li>一共 4 句嗎？</li>
+      <li>每句都是 5 個字，或都是 7 個字嗎？</li>
+      <li>第 2 句和第 4 句押韻嗎？</li>
+      <li>內容和鏡平校慶、校史或校訓有關嗎？</li>
+      <li>用的是繁體中文嗎？有沒有我自己最滿意的一句？</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ ④ 生成詩句 ============ -->
+<section id="poem">
+  <div class="sec-head">
+    <div class="sec-no">④</div>
+    <div>
+      <h2>第一部份：用 AI 生成校慶詩句</h2>
+      <p class="sub">提示詞範例、追問句型、操作步驟</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>操作步驟（跟著做）</h3>
+    <ol>
+      <li><b>開啟 AI 工具。</b>使用本節最下方「開啟 AI 工具」區的任一入口（靈機 AIGC／Copilot／豆包）。登入後下次還能看到之前的對話，比較方便修改。</li>
+      <li><b>先複製下面的「提示詞完整版」。</b></li>
+      <li><b>把提示詞裡的三處「＿＿」換成你自己的校史資料</b>（從背景資料包或任務單抄過來）。這一步最重要——不換的話，你的詩會和別人一樣。</li>
+      <li><b>貼進對話框，送出。</b></li>
+      <li><b>看結果，然後追問至少一次</b>（追問句型見下方）。不滿意就繼續叫它改。</li>
+      <li><b>把滿意的詩複製下來</b>，貼進提交模板（Word 版）第 2 頁，分成 4 行；同時把<b>完整提示詞</b>也貼進第 2 頁。</li>
+    </ol>
+    <div class="hint">
+      <b>遇到「生成很久沒回應」？</b>先等一下（可能同時太多人在用），若超過一分鐘仍無反應，重新整理頁面再試一次。若真的不行，先跳去做下一題，課後再補。
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>提示詞範例（完整版）</h3>
+    <div class="copybox">
+      <div class="bar"><span>把你的校史資料填進「＿＿」處</span>
+        <button class="copy-btn" data-target="c-poem-full">複製</button></div>
+      <pre id="c-poem-full">請依以下指示，生成一首慶祝澳門鏡平學校校慶的詩：
+
+1. 使用繁體中文字；
+2. 詩句的格式為七言絕句，全詩共 4 句；
+3. 第 2 句和第 4 句要押韻；
+4. 詩句要能表達慶祝鏡平學校校慶、讚揚鏡平學校的辦學精神或特色；
+5. 以下是澳門鏡平學校的參考資料，你生成詩句時可以參考：
+＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
+＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
+＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
+
+（說明：第 5 點請填上你自己採集到的校史資料，例如學校歷史沿革、辦學理念、校訓「誠毅精博」、校歌精神，或學校近年的成就。）</pre>
+    </div>
+
+    <h3 style="margin-top:22px">提示詞範例（填空版——進階挑戰）</h3>
+    <p>如果你想更進一步，可以自己決定要強調什麼，而不是只填資料：</p>
+    <div class="copybox">
+      <div class="bar"><span>可自行修改關鍵字的版本</span>
+        <button class="copy-btn" data-target="c-poem-adv">複製</button></div>
+      <pre id="c-poem-adv">你是一位熟悉中國古典詩詞的中文老師。
+請為澳門鏡平學校創作一首慶祝校慶的七言絕句，全詩 4 句，第 2 句和第 4 句押韻，使用繁體中文。
+
+我希望這首詩強調的主題是：＿＿＿＿＿＿（例如：薪火相傳 / 桃李滿門 / 愛國愛澳 / 誠毅精博的校訓）
+我希望詩中出現的意象有：＿＿＿＿＿＿（例如：木棉花、書本、鏡海、燈塔、鳳凰木）
+我希望整首詩的氣氛是：＿＿＿＿＿＿（例如：溫暖莊重 / 昂揚奮發 / 喜慶熱烈）
+
+以下是學校的參考資料：＿＿＿＿＿＿＿＿＿＿
+請先說明你打算怎麼安排這四句的結構，再寫出詩句。</pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>追問句型（至少挑一句用一次）</h3>
+    <p>AI 第一次給的詩幾乎不會是最好的。你要告訴它哪裡不對、要改成怎樣：</p>
+    <div class="tbl-scroll">
+    <table>
+      <thead><tr><th style="width:60px">類型</th><th>可以這樣對 AI 說</th></tr></thead>
+      <tbody>
+        <tr><td>換內容</td><td>「請把第 2 句改成描寫校園景色的句子。」</td></tr>
+        <tr><td>換意象</td><td>「『育棟樑』這個說法太普通了，請換一個更有畫面感的說法。」</td></tr>
+        <tr><td>換韻腳</td><td>「請把押韻的字換成和『疆』同韻的字。」</td></tr>
+        <tr><td>限字挑戰</td><td>「請讓每一句的第一個字合起來，變成『鏡平學校』。」（藏頭詩）</td></tr>
+        <tr><td>強調校訓</td><td>「請把校訓『誠、毅、精、博』的意思自然地融入第 3 句。」</td></tr>
+        <tr><td>調整語氣</td><td>「這首詩讀起來太嚴肅了，請改得更有喜慶、熱鬧的感覺。」</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="warn">
+      <b>每次追問都要記錄！</b>把你對 AI 說的話、AI 改完的結果、以及<b>你為什麼要這樣改</b>，寫在任務單上。這是老師評分時最看重的證據。
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>開啟 AI 工具</h3>
+    <div class="prompt-bar">
+      <a class="btn-link" href="https://one.macaucampus.com/campus/login" target="_blank" rel="noopener">開啟靈機 AIGC →</a>
+      <a class="btn-link" href="https://m365.cloud.microsoft/chat" target="_blank" rel="noopener">開啟 Copilot →</a>
+      <a class="btn-link" href="https://www.doubao.com/" target="_blank" rel="noopener">開啟豆包 AI →</a>
+    </div>
+    <p style="margin:10px 0 0; font-size:14px; color:#8a7a64">靈機 AIGC（澳門校園平台）與 Copilot 需登入後使用；若學校建議使用其他 AI 工具，請依老師指示。</p>
+  </div>
+</section>
+
+<!-- ============ ⑤ 生成海報底圖（個人工作台） ============ -->
+<section id="poster">
+  <h2><span class="step">⑤</span>生成海報底圖</h2>
+  <p class="sub">海報底圖用 AI 生成。這一步，你要先在下一步「選你的風格」，把提示詞準備好。</p>
+  <div class="card">
+    <h3>生成底圖前，先記住這三條「鐵律」</h3>
+    <div class="warn">
+      <b>① 海報要直向 A3 尺寸。</b><br>
+      <b>② 海報中不要加入任何文字。</b><br>
+      <b>③ 頂部三分之一要預留空白</b>——可以塗底色，但<b>不要有任何物件、方框或對話框</b>，因為你最後要在這裡手動放上詩句。
+    </div>
+    <div class="tip"><b>附件參考：</b>下面有鏡平學校的建築物圖片、KP 娃娃圖片（含透明底卡通娃娃），生成底圖時可以參考、融入這些元素，讓你的海報更有鏡平的特色。</div>
+  </div>
+</section>
+
+<!-- ============ ⑥ 選你的風格（個人工作台，核心） ============ -->
+<section id="route">
+  <h2><span class="step">⑥</span>選你的風格</h2>
+  <p class="sub">這是讓「每張海報都不一樣」的關鍵。你先選一個<b>風格</b>，再逐項挑選主體、人物、光線、色彩、氣氛、構圖——系統會幫你把選項統整成一段<b>協調的提示詞</b>。</p>
+
+  <div class="card">
+    <h3>第一步：選風格路線（十選一）</h3>
+    <p style="font-size:14px;color:#6b5d4f">風格是你的海報的「基因」。點一張選中，下面六個項目會自動帶出跟它最搭的推薦值。</p>
+    <div class="style-grid" id="styleGrid"></div>
+  </div>
+
+  <div class="card">
+    <h3>第二步：逐項挑選元素</h3>
+    <p style="font-size:14px;color:#6b5d4f">每一項都可以自己選。標 <b style="color:var(--ok)">⭐ 推薦</b> 的選項，是和你的風格最搭的；選其他選項也可以，但系統會提醒你「這組合可能不太協調」。</p>
+    <div class="dim-grid" id="dimGrid"></div>
+
+    <div id="harmony" class="green">
+      <div class="dot"></div>
+      <div class="h-body">
+        <b id="harmonyTitle">風格一致</b>
+        <div class="h-msg" id="harmonyMsg">你的選擇和所選風格很協調，可以直接生成底圖。</div>
+        <div class="h-why" id="harmonyWhy"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>第三步：生成提示詞</h3>
+    <p style="font-size:14px;color:#6b5d4f">確認下方提示詞無誤後，按「複製提示詞」，貼到 AI 圖片工具裡生成底圖。生成後記得檢查：<b>頂部三分之一有沒有留白、有沒有出現文字</b>。</p>
+    <div class="prompt-out" id="promptOut"></div>
+    <div class="prompt-bar">
+      <button class="copy" id="btnCopy">複製提示詞</button>
+      <button class="ghost" id="btnReset">全部重設</button>
+    </div>
+    <div class="tool-links">
+      <span>複製後開啟 AI 工具生成底圖：</span>
+      <a href="https://one.macaucampus.com/campus/login" target="_blank" rel="noopener">靈機 AIGC</a>
+      <a href="https://m365.cloud.microsoft/chat" target="_blank" rel="noopener">Copilot</a>
+      <a href="https://www.doubao.com/" target="_blank" rel="noopener">豆包</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ⑦ 合成與評價（index 版） ============ -->
+<section id="compose">
+  <div class="sec-head">
+    <div class="sec-no">⑦</div>
+    <div>
+      <h2>第三部份：合成、評價與提交</h2>
+      <p class="sub">最後一步，也是最能看出你的功力的地方</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>先想一想：為什麼不讓 AI 直接把字寫上去？</h3>
+    <p>上課時我們會做一個實驗：請 AI 把詩句直接寫進海報圖片裡，然後一起看結果。</p>
+    <p style="margin-bottom:0"><b>請先猜一猜：它寫的中文字會正確嗎？為什麼？</b>把你的猜測寫在任務單上，再對答案。</p>
+  </div>
+
+  <div class="card">
+    <h3>合成六步（Word 操作）</h3>
+    <ol>
+      <li>用 <b>Word</b> 打開「校慶海報提交模板（Word 版）」，捲到<b>第 4 頁</b>。</li>
+      <li>「<b>插入</b>」→「<b>圖片</b>」，選擇你生成的海報底圖，拉大至<b>填滿整頁</b>。</li>
+      <li>點選圖片，把「<b>文繞圖</b>」設成「<b>襯於文字下</b>」——這樣文字才能疊在圖片上面。</li>
+      <li>「<b>插入</b>」→「<b>文字方塊</b>」，在畫面上方三分之一輸入你的詩句（分成 4 行）。</li>
+      <li>設定詩句的<b>字型、字號</b>——選清楚易讀的（例如標楷體、微軟正黑體），看得清楚但不要大到遮住畫面主角。</li>
+      <li>設定<b>顏色</b>、把文字方塊移到留白處，再用「<b>對齊</b>」工具微調，最後<b>儲存檔案</b>。</li>
+    </ol>
+    <div class="hint">
+      最後整體看一次：<b>和諧嗎？會不會擋住重要畫面？四個字有沒有寫錯？</b>再截圖交件。
+    </div>
+    <div class="tip"><b>想讓海報更活潑？</b>素材下載區有「<b>透明底 KP 娃娃</b>」——挑一款插入後，記得也把「文繞圖」設成「襯於文字下」（不會有白框，像貼紙一樣），再貼到畫面角落或留白處當裝飾，不要擋住詩句和主角。</div>
+  </div>
+
+  <div class="card">
+    <h3>版面判斷三問</h3>
+    <div class="opt-grid">
+      <div class="opt"><b>① 字放在哪裡最清楚？</b><span>找你畫面裡最乾淨的那一塊留白。放在熱鬧的花叢上，字就看不見了。</span></div>
+      <div class="opt"><b>② 顏色對比夠嗎？</b><span>淺色背景配深色字，深色背景配淺色字。也可以用描邊或陰影讓字浮出來。</span></div>
+      <div class="opt"><b>③ 整體和諧嗎？</b><span>字的風格、大小與畫面配合嗎？會不會一邊太重、一邊太空？</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Word 技能檢核（核心 7 項・必評）</h3>
+    <p>這次專題會用到 7 個 Word 核心技能。做完後<b>點一點下面的清單</b>打勾；也別忘了在模板<b>第 5 頁</b>把同樣的清單打勾。</p>
+    <ul class="skill-list" id="skillList"></ul>
+    <div class="skill-progress" id="skillProgress">核心技能：0 / 7</div>
+    <div class="skill-sub">進階挑戰——做到就更棒！</div>
+    <ul class="skill-list" id="skillListAdv"></ul>
+    <div class="hint">打勾表示「我真的會做」——還不太會的，趁現在問老師或同學把它補起來。</div>
+  </div>
+
+  <div class="card">
+    <h3>把海報存成 PNG 圖片</h3>
+    <p style="font-size:14px;color:#6b5d4f">Word 沒有「另存成圖片」的按鈕，所以我們出動系統的「剪取工具」把第 4 頁截下來。</p>
+    <ol>
+      <li>確認第 4 頁的海報已調整完成、<b>存好檔</b>，並調整顯示比例讓<b>整頁都看得到</b>。</li>
+      <li>按鍵盤 <b>Win + Shift + S</b>（或從開始選單打開「<b>剪取工具</b>」→「新增」）。</li>
+      <li>游標變成十字後，從海報<b>左上角拖到右下角</b>，框住整頁。</li>
+      <li>右下角會彈出畫面通知——<b>點開它</b>，按「儲存」。存檔命名建議：<b>P5A_學號_姓名_校慶海報.png</b></li>
+      <li>打開存出來的圖片檢查：詩句清楚嗎？有沒有被裁掉？</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h3>加上來源標註（一定要寫）</h3>
+    <p>用了 AI 就要說清楚。模板封面的「使用 AI 工具」和「校史資料來源」兩行<b>一定要填</b>；也可以把下面這整段放在你的作品角落：</p>
+    <div class="copybox">
+      <div class="bar"><span>來源標註範本</span>
+        <button class="copy-btn" data-target="c-credit">複製</button></div>
+      <pre id="c-credit">本海報使用 ＿＿＿＿＿＿＿＿（AI 工具名稱）協助生成詩句與底圖；
+校史資料來源：＿＿＿＿＿＿＿＿；
+詩句、選圖與版面編排由本人完成。</pre>
+    </div>
+    <div class="hint">
+      <b>為什麼要寫這個？</b>因為這張海報是你的作品，不是 AI 的作品。說清楚你用了什麼工具、資料從哪裡來，是對自己負責，也是對原作者和學校的尊重。
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>同儕互評：給同學具體的回饋</h3>
+    <p>看完同學的作品，用這三句話回饋。<b>不可以只寫「好看」或「不好看」</b>——要說出你在畫面裡看到什麼：</p>
+    <ol>
+      <li>我最欣賞這張海報的一個地方是……（說出是哪個畫面元素、或哪一句詩）</li>
+      <li>我很好奇的一個選擇是……</li>
+      <li>如果是我，我會試著……</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h3>提交前最後檢核</h3>
+    <div class="tbl-scroll">
+    <table>
+      <thead><tr><th style="width:60px">✓</th><th>檢查項目</th></tr></thead>
+      <tbody>
+        <tr><td>☐</td><td>提交模板第 1 頁已填班別、班號、姓名</td></tr>
+        <tr><td>☐</td><td>第 2 頁有我的<b>完整提示詞</b>和詩句</td></tr>
+        <tr><td>☐</td><td>第 3 頁有我的海報<b>提示詞</b>和底圖</td></tr>
+        <tr><td>☐</td><td>第 4 頁已合成完成的海報（圖片＋文字方塊）</td></tr>
+        <tr><td>☐</td><td>第 5 頁的技能檢核已打勾</td></tr>
+        <tr><td>☐</td><td>我已把海報截圖存成 <b>PNG 圖片檔</b></td></tr>
+        <tr><td>☐</td><td>我已標註 AI 工具和資料來源</td></tr>
+        <tr><td>☐</td><td>我已完成互評單</td></tr>
+        <tr><td>☐</td><td>兩個檔案都已上傳到 PL2 作業提交區</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 素材下載（個人工作台） ============ -->
+<section id="download">
+  <h2><span class="step">📁</span>素材下載</h2>
+  <p class="sub">點擊圖片即可下載原始檔案。素材只供本次專題活動學習使用，請勿公開發布或作其他用途。</p>
+  <div class="card">
+    <h3>學校與人物素材（生成底圖可參考）</h3>
+    <div class="tip"><b>小提示：</b>帶「<b>透明底</b>」的 KP 娃娃沒有白色背景——下載後可以直接貼到海報上當裝飾（像貼紙一樣），不會出現白框；也可以上傳給 AI 當作生成風格的參考。</div>
+    <div class="asset-grid" id="assetGrid"></div>
+  </div>
+  <div class="card">
+    <h3>十條風格示範圖（看完選一條，不要照抄）</h3>
+    <div class="asset-grid" id="styleAssetGrid"></div>
+  </div>
+  <div class="card">
+    <h3>作業與模板</h3>
+    <div class="asset-grid" id="docGrid"></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  鏡平 134．我與 AI 共創校慶海報 · P5 上學期跨學科專題活動<br>
+  校史與校訓資料來源：鏡平學校官網（學校沿革、校訓-學風-教風）／澳門特區政府授勳文件（2025）／澳門記憶「鏡湖小學及平民小學史略」<br>
+  本頁可離線使用，建議用 Chrome 或 Edge 開啟。
+</footer>
+
+<script>
+/* ============================================================
+   ①–④ 的複製按鈕（源自 index）
+   ============================================================ */
+(function(){
+  function fallbackCopy(text){
+    try{
+      var ta=document.createElement('textarea');
+      ta.value=text;
+      ta.style.position='fixed'; ta.style.top='0'; ta.style.left='0';
+      ta.style.opacity='0'; ta.style.pointerEvents='none';
+      document.body.appendChild(ta);
+      ta.focus(); ta.select();
+      var ok=false;
+      try{ ok=document.execCommand('copy'); }catch(e){ ok=false; }
+      document.body.removeChild(ta);
+      return ok;
+    }catch(e){ return false; }
+  }
+  function selectNode(node){
+    try{
+      var r=document.createRange();
+      r.selectNodeContents(node);
+      var s=window.getSelection();
+      s.removeAllRanges(); s.addRange(r);
+    }catch(e){}
+  }
+  var btns=document.querySelectorAll('.copy-btn');
+  for(var i=0;i<btns.length;i++){
+    btns[i].addEventListener('click',function(){
+      var btn=this;
+      var target=document.getElementById(btn.getAttribute('data-target'));
+      if(!target) return;
+      var text=target.innerText;
+      var original=btn.textContent;
+      function done(ok){
+        if(ok){
+          btn.textContent='已複製 ✓';
+        }else{
+          selectNode(target);
+          target.classList.add('copy-box-select');
+          btn.textContent='請按 Ctrl+C';
+          alert('自動複製未成功，已為你選取文字。\n請按 Ctrl+C（Mac 按 Command+C）複製。');
+        }
+        setTimeout(function(){
+          btn.textContent=original;
+          target.classList.remove('copy-box-select');
+        },2500);
+      }
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(function(){ done(true); },function(){ done(fallbackCopy(text)); });
+      }else{
+        done(fallbackCopy(text));
+      }
+    });
+  }
+})();
+</script>
+
+<script>
+/* ============================================================
+   ⑥ 選你的風格：資料定義（源自個人工作台）
+   ============================================================ */
+
+/* 十條風格路線。每條含：
+   - name/tag/img：卡片展示用
+   - styleDesc：提示詞第4點「風格」的完整描述
+   - rec：六個從屬維度的推薦值 key（協調錨點）
+*/
+const STYLES = [
+  {
+    id:1, name:"金紅節慶", tag:"插畫風 · 校史慶典",
+    img:"assets/風格示範/風格1_金紅節慶_插畫風.png",
+    styleDesc:"現代商業插畫風格，喜慶金光，畫面熱鬧有慶典感",
+    rec:{subject:"school", person:"kp", light:"radiant", color:"redgold", mood:"celebrate", comp:"symmetry"},
+  },
+  {
+    id:2, name:"清新水彩", tag:"淡雅風 · 校園景色",
+    img:"assets/風格示範/風格2_清新水彩_淡雅風.png",
+    styleDesc:"清新水彩畫風格，柔和淡雅，低飽和的透明水彩質感，筆觸輕盈水潤",
+    rec:{subject:"campus", person:"kp", light:"soft", color:"fresh", mood:"quiet", comp:"space"},
+  },
+  {
+    id:3, name:"Q 版 3D", tag:"童趣風 · 校園生活",
+    img:"assets/風格示範/風格3_Q版3D_童趣風.png",
+    styleDesc:"可愛的 3D 卡通渲染風格（Q 版），有立體感與光澤，活潑童趣",
+    rec:{subject:"campus", person:"kp", light:"bright", color:"bright", mood:"playful", comp:"center"},
+  },
+  {
+    id:4, name:"古風水墨", tag:"書卷風 · 校訓傳承",
+    img:"assets/風格示範/風格4_古風水墨_書卷風.png",
+    styleDesc:"中國傳統水墨畫風格，帶宣紙紋理，淡墨與濃墨交錯，古雅留白",
+    rec:{subject:"school", person:"none", light:"soft", color:"ink", mood:"quiet", comp:"space"},
+  },
+  {
+    id:5, name:"現代幾何", tag:"設計風 · 創校里程碑",
+    img:"assets/風格示範/風格5_現代幾何_設計風.png",
+    styleDesc:"現代扁平化幾何設計風格（flat vector design），純色塊與簡潔線條，時尚簡約",
+    rec:{subject:"landmark", person:"none", light:"flat", color:"navygold", mood:"modern", comp:"geometry"},
+  },
+  {
+    id:6, name:"藍調夜景", tag:"璀璨風 · 澳門與家國",
+    img:"assets/風格示範/風格6_藍調夜景_璀璨風.png",
+    styleDesc:"夜景燈光風格，寫實感，深藍夜空配暖黃燈光，靜謐璀璨",
+    rec:{subject:"landmark", person:"kp", light:"night", color:"bluegold", mood:"serene", comp:"depth"},
+  },
+  {
+    id:7, name:"剪紙鏤空", tag:"民俗風 · 節慶吉祥",
+    img:"assets/風格示範/風格7_剪紙鏤空_民俗風.png",
+    styleDesc:"中國傳統剪紙藝術風格，紅色鏤空質感，祥雲燈籠等吉祥紋樣，喜慶熱鬧",
+    rec:{subject:"school", person:"kp", light:"radiant", color:"redgold", mood:"celebrate", comp:"symmetry"},
+  },
+  {
+    id:8, name:"醒獅賀慶", tag:"南嶺風 · 鑼鼓歡騰",
+    img:"assets/風格示範/風格8_醒獅賀慶_南嶺風.png",
+    styleDesc:"嶺南醒獅賀慶風格，金紅醒獅頭與彩綢飛舞，鑼鼓喧天，熱鬧歡騰的節慶畫面",
+    rec:{subject:"school", person:"students", light:"radiant", color:"redgold", mood:"celebrate", comp:"symmetry"},
+  },
+  {
+    id:9, name:"澳門印記", tag:"蓮城風 · 澳門風情",
+    img:"assets/風格示範/風格9_澳門印記_蓮城風.png",
+    styleDesc:"澳門城市風情插畫風格，蓮花、大三巴牌坊、東望洋燈塔與葡式彩色建築交融，暖陽金橙色調，中葡文化共融的溫馨風情",
+    rec:{subject:"landmark", person:"kp", light:"bright", color:"liancheng", mood:"warm", comp:"depth"},
+  },
+  {
+    id:10, name:"國潮新韻", tag:"新中式風 · 時尚喜慶",
+    img:"assets/風格示範/風格10_國潮新韻_新中式風.png",
+    styleDesc:"國潮新中式設計風格，中國傳統紋樣（祥雲、回紋、印章）與現代平面構成融合，紅撞青綠描金，時尚大氣",
+    rec:{subject:"school", person:"kp", light:"flat", color:"guochao", mood:"modern", comp:"geometry"},
+  },
+];
+
+/* 六個從屬維度的完整選項庫。
+   每項：{key, label, prompt, good:該選項與哪些風格「協調」}
+*/
+const DIMS = [
+  {
+    id:"subject", no:5, label:"主體", hint:"畫面主角是什麼",
+    options:[
+      {key:"school",  label:"鏡平校園建築", prompt:"以鏡平學校的建築外觀為主體，突出校舍與校門的輪廓", good:[1,2,4,7,8,10]},
+      {key:"campus",  label:"校園景色",     prompt:"以校園景色為主體，描繪木棉樹、操場與綠意盎然的校園一角", good:[2,3]},
+      {key:"landmark",label:"澳門地標+校園",prompt:"以澳門地標（如大三巴、旅遊塔）與校園建築結合為主體，象徵學校與澳門同在", good:[5,6,9]},
+      {key:"symbol",  label:"抽象符號",     prompt:"以抽象符號與圖形（如放射狀圓形、幾何圖案）為主體", good:[5]},
+    ]
+  },
+  {
+    id:"person", no:6, label:"人物", hint:"畫面有沒有角色",
+    options:[
+      {key:"kp",    label:"KP 娃娃",     prompt:"融入鏡平學校的 KP 娃娃卡通形象，穿著校服，活潑可愛", good:[1,2,3,6,7,8,9,10]},
+      {key:"students",label:"學生群像",   prompt:"描繪一群學生在校園中學習、活動的剪影或形象", good:[1,2,3,7,8,9,10]},
+      {key:"none",  label:"不要人物",     prompt:"畫面中不放人物，專注於景物與意境", good:[4,5]},
+    ]
+  },
+  {
+    id:"light", no:7, label:"光線", hint:"畫面的光影氛圍",
+    options:[
+      {key:"radiant", label:"放射金光", prompt:"放射狀的溫暖金光，從中心向外擴散", good:[1,7,8]},
+      {key:"soft",    label:"柔和側光", prompt:"柔和的自然側光，光線輕柔細膩", good:[2,4]},
+      {key:"bright",  label:"明亮日光", prompt:"明亮的白天日光，色彩飽滿活潑", good:[3,9]},
+      {key:"night",   label:"夜晚燈光", prompt:"夜晚的燈光，深藍夜色中點綴暖黃光點", good:[6]},
+      {key:"flat",    label:"無陰影平光", prompt:"均勻無陰影的平光，扁平乾淨", good:[5,10]},
+    ]
+  },
+  {
+    id:"color", no:8, label:"色彩", hint:"主色調與配色",
+    options:[
+      {key:"redgold", label:"正紅+金",   prompt:"以正紅色與金色為主色調，喜慶熱烈", good:[1,7,8]},
+      {key:"fresh",   label:"米白淺青",   prompt:"以米白與淺青色為主色調，清新淡雅", good:[2]},
+      {key:"bright",  label:"繽紛高彩",   prompt:"高彩度的繽紛色彩，明快活潑", good:[3]},
+      {key:"ink",     label:"墨赭宣紙",   prompt:"以墨色與赭色的水墨宣紙色調，古雅沉靜", good:[4]},
+      {key:"navygold",label:"金+深藍",   prompt:"以金色與深藍色為主色調，時尚大氣", good:[5]},
+      {key:"bluegold",label:"深藍+暖黃", prompt:"以深藍與暖黃色為主色調，靜謐璀璨", good:[6]},
+      {key:"guochao", label:"國潮紅青",   prompt:"以中國紅為主，撞以青綠色與描金線條，時尚大氣的東方撞色", good:[10]},
+      {key:"liancheng",label:"蓮城粉彩",  prompt:"以暖陽金橙為主，點綴蓮花粉紅與葡式建築的柔和粉彩色調", good:[9]},
+    ]
+  },
+  {
+    id:"mood", no:9, label:"氣氛", hint:"整體情感基調",
+    options:[
+      {key:"celebrate", label:"喜慶熱鬧", prompt:"喜慶熱鬧的慶典氣氛，歡騰熱烈", good:[1,7,8]},
+      {key:"quiet",     label:"安靜淡雅", prompt:"安靜淡雅的氣氛，平和寧靜", good:[2,4]},
+      {key:"playful",   label:"活潑童趣", prompt:"活潑童趣的氣氛，輕快歡樂", good:[3]},
+      {key:"modern",    label:"現代時尚", prompt:"現代時尚的氣氛，簡潔有力", good:[5,10]},
+      {key:"serene",    label:"靜謐璀璨", prompt:"靜謐璀璨的氣氛，夜色寧靜又華麗", good:[6]},
+      {key:"warm",      label:"溫馨動人", prompt:"溫馨動人的氣氛，洋溢著城市情懷與自豪感", good:[9]},
+    ]
+  },
+  {
+    id:"comp", no:10, label:"構圖", hint:"畫面布局方式",
+    options:[
+      {key:"symmetry", label:"對稱中心式", prompt:"對稱的中心式構圖，主體居中、左右平衡", good:[1,7,8]},
+      {key:"space",    label:"大留白式",   prompt:"大量留白的簡約構圖，主體偏下、頂部大幅留白", good:[2,4]},
+      {key:"center",   label:"近景特寫式", prompt:"近景特寫構圖，主體放大占滿畫面下方", good:[3]},
+      {key:"geometry", label:"幾何分割式", prompt:"幾何分割構圖，以色塊與線條切割畫面", good:[5,10]},
+      {key:"depth",    label:"遠近景深式", prompt:"有前景中景遠景的景深構圖，層次分明", good:[6,9]},
+    ]
+  },
+];
+
+/* 素材下載 */
+const ASSETS = [
+  {name:"校徽", file:"assets/校徽.png", img:"assets/校徽.png"},
+  {name:"校園外觀 01", file:"assets/鏡平學校外觀01.jpg", img:"assets/鏡平學校外觀01.jpg"},
+  {name:"校園外觀 02", file:"assets/鏡平學校外觀02.jpg", img:"assets/鏡平學校外觀02.jpg"},
+  {name:"KP 娃娃 01", file:"assets/KP娃娃01.jpg", img:"assets/KP娃娃01.jpg"},
+  {name:"KP 娃娃 02", file:"assets/KP娃娃02.jpg", img:"assets/KP娃娃02.jpg"},
+  {name:"KP 娃娃 03", file:"assets/KP娃娃03.jpg", img:"assets/KP娃娃03.jpg"},
+  {name:"KP 娃娃 04", file:"assets/KP娃娃04.jpg", img:"assets/KP娃娃04.jpg"},
+  {name:"KP 娃娃 · 誠（透明底）", file:"assets/KP娃娃_透明_誠.png", img:"assets/KP娃娃_透明_誠.png"},
+  {name:"KP 娃娃 · 毅（透明底）", file:"assets/KP娃娃_透明_毅.png", img:"assets/KP娃娃_透明_毅.png"},
+  {name:"KP 娃娃 · 精（透明底）", file:"assets/KP娃娃_透明_精.png", img:"assets/KP娃娃_透明_精.png"},
+  {name:"KP 娃娃 · 博（透明底）", file:"assets/KP娃娃_透明_博.png", img:"assets/KP娃娃_透明_博.png"},
+  {name:"KP 娃娃 · 四格版（透明底）", file:"assets/KP娃娃_透明_四格版.png", img:"assets/KP娃娃_透明_四格版.png"},
+  {name:"KP 娃娃 · 橫排版（透明底）", file:"assets/KP娃娃_透明_橫排版.png", img:"assets/KP娃娃_透明_橫排版.png"},
+  {name:"範例海報（僅供觀摩）", file:"assets/範例海報_僅供觀摩.png", img:"assets/範例海報_僅供觀摩.png"},
+];
+const STYLE_ASSETS = STYLES.map(s => ({name:s.name, file:s.img, img:s.img}));
+const DOCS = [
+  {name:"提交模板（Word 版）", file:"assets/校慶海報提交模板（Word版）.docx", img:""},
+  {name:"學生任務單 DOCX", file:"assets/校慶AI海報_學生任務單.docx", img:""},
+];
+
+/* ============================================================
+   狀態
+   ============================================================ */
+let selectedStyle = null;
+let selectedDims = {};
+
+/* 渲染：風格卡 */
+function renderStyles(){
+  const g = document.getElementById('styleGrid');
+  g.innerHTML = STYLES.map(s=>`
+    <div class="style-card" data-id="${s.id}">
+      <span class="chk" style="position:absolute;margin:6px;background:rgba(255,255,255,.9);border-radius:50%;width:22px;height:22px;line-height:22px;text-align:center">✓</span>
+      <img src="${s.img}" alt="${s.name}">
+      <div class="sc-body">
+        <b>路線 ${s.id} · ${s.name}</b>
+        <span class="sc-tag">${s.tag}</span>
+      </div>
+    </div>`).join('');
+  g.querySelectorAll('.style-card').forEach(el=>{
+    el.addEventListener('click',()=>{
+      const id = Number(el.dataset.id);
+      selectStyle(id);
+    });
+  });
+}
+
+function selectStyle(id){
+  const s = STYLES.find(x=>x.id===id);
+  selectedStyle = s;
+  document.querySelectorAll('.style-card').forEach(el=>{
+    el.classList.toggle('on', Number(el.dataset.id)===id);
+  });
+  selectedDims = {...s.rec};
+  renderDims();
+  updateHarmony();
+  renderPrompt();
+}
+
+/* 渲染：六個從屬維度下拉 */
+function renderDims(){
+  const g = document.getElementById('dimGrid');
+  g.innerHTML = DIMS.map(d=>{
+    const opts = orderOptions(d, selectedStyle);
+    return `
+    <div class="dim">
+      <label><span class="d-no">第 ${d.no} 項</span> ${d.label}<span class="hint">${d.hint}</span></label>
+      <select data-dim="${d.id}">
+        ${opts.map(o=>`<option value="${o.key}" class="${o.cls}">${o.flag}${o.label}</option>`).join('')}
+      </select>
+    </div>`;
+  }).join('');
+  g.querySelectorAll('select').forEach(sel=>{
+    const dim = sel.dataset.dim;
+    sel.value = selectedDims[dim] || DIMS.find(d=>d.id===dim).options[0].key;
+    sel.addEventListener('change',()=>{
+      selectedDims[dim] = sel.value;
+      updateHarmony();
+      renderPrompt();
+    });
+  });
+}
+
+function orderOptions(dim, style){
+  return dim.options.map(o=>{
+    let flag='', cls='';
+    if(style){
+      const isRec = o.good.includes(style.id);
+      if(isRec){ flag='⭐ 推薦 '; cls='rec'; }
+      else { flag=''; cls='warn'; }
+    }
+    return {key:o.key, label:o.label, flag, cls};
+  });
+}
+
+/* 和諧度判斷 + 預警 */
+function updateHarmony(){
+  const box = document.getElementById('harmony');
+  const title = document.getElementById('harmonyTitle');
+  const msg = document.getElementById('harmonyMsg');
+  const why = document.getElementById('harmonyWhy');
+  if(!selectedStyle){
+    box.className='green';
+    title.textContent='請先選風格';
+    msg.textContent='選好風格路線後，這裡會即時告訴你組合協不協調。';
+    why.textContent='';
+    return;
+  }
+  const conflicts = [];
+  DIMS.forEach(d=>{
+    const key = selectedDims[d.id];
+    const opt = d.options.find(o=>o.key===key);
+    if(opt && !opt.good.includes(selectedStyle.id)){
+      conflicts.push({dim:d, opt});
+    }
+  });
+  if(conflicts.length===0){
+    box.className='green';
+    title.textContent='✅ 風格一致';
+    msg.textContent=`你的六個選項都和「${selectedStyle.name}」很協調，可以直接生成底圖。`;
+    why.textContent='';
+  } else {
+    const names = conflicts.map(c=>`「${c.dim.label}」`).join('、');
+    const bad = conflicts.length>=3;
+    box.className = bad ? 'red' : 'yellow';
+    title.textContent = bad ? '⚠️ 組合不太協調' : '⚠️ 有幾項可以再想想';
+    msg.textContent = `你選的 ${names} 和「${selectedStyle.name}」風格不太搭。`;
+    why.textContent = '建議：把它們換回下拉選單裡標「⭐ 推薦」的選項；當然，你堅持自己的選擇也可以，只是生成的底圖風格可能沒那麼統一。';
+  }
+}
+
+/* 提示詞組裝 */
+function getOption(dimId){
+  const d = DIMS.find(x=>x.id===dimId);
+  const key = selectedDims[dimId];
+  return d.options.find(o=>o.key===key) || d.options[0];
+}
+
+function buildPrompt(){
+  if(!selectedStyle){
+    return {text:'', complete:false};
+  }
+  const subject = getOption('subject');
+  const person  = getOption('person');
+  const light   = getOption('light');
+  const color   = getOption('color');
+  const mood    = getOption('mood');
+  const comp    = getOption('comp');
+
+  const lines = [
+    '1. 海報比例及大小為：直向 A3 尺寸。',
+    '2. 海報中不要加入任何文字。',
+    '3. 我會在最後手動加入詩句，請在畫面頂部三分之一預留足夠的留白空間，可以有底色但不要有物件，也不要留有方框或對話框。',
+    `4. 風格：${selectedStyle.styleDesc}。`,
+    `5. 主體：${subject.prompt}。`,
+    `6. 人物：${person.prompt}。`,
+    `7. 光線：${light.prompt}。`,
+    `8. 色彩：${color.prompt}。`,
+    `9. 氣氛：${mood.prompt}。`,
+    `10. 構圖：${comp.prompt}。`,
+    '11. 附件是鏡平學校的建築物圖片及學生卡通形象服飾圖片，可以參考並融入圖片設計。',
+  ];
+  return {text:lines.join('\n'), complete:true};
+}
+
+function renderPrompt(){
+  const out = document.getElementById('promptOut');
+  const r = buildPrompt();
+  if(!r.complete){
+    out.innerHTML = '<span class="plabel">請先在上方「第一步」選一個風格路線，這裡就會自動組裝出你的完整提示詞。</span>';
+    return;
+  }
+  const html = r.text.split('\n').map(line=>{
+    const m = line.match(/^(\d+)\.\s*(.*)$/);
+    return m ? `<span class="plabel">${m[1]}.</span> ${escapeHtml(m[2])}` : escapeHtml(line);
+  }).join('<br>');
+  out.innerHTML = html;
+}
+
+function escapeHtml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* 一鍵複製（雙路徑降級） */
+function copyPrompt(){
+  const r = buildPrompt();
+  if(!r.complete){
+    alert('請先選一個風格路線！');
+    return;
+  }
+  const btn = document.getElementById('btnCopy');
+  const doCopy = () => {
+    btn.textContent='已複製 ✓';
+    btn.classList.add('ok');
+    setTimeout(()=>{ btn.textContent='複製提示詞'; btn.classList.remove('ok'); }, 2000);
+  };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(r.text).then(doCopy).catch(()=>fallback());
+  } else {
+    fallback();
+  }
+  function fallback(){
+    const ta = document.createElement('textarea');
+    ta.value = r.text;
+    document.body.appendChild(ta);
+    ta.select();
+    try{ document.execCommand('copy'); doCopy(); }
+    catch(e){ alert('複製失敗，請手動選取提示詞後按 Ctrl+C。'); }
+    document.body.removeChild(ta);
+  }
+}
+
+/* 重設 */
+function resetAll(){
+  selectedStyle = null;
+  selectedDims = {};
+  document.querySelectorAll('.style-card').forEach(el=>el.classList.remove('on'));
+  renderDims();
+  updateHarmony();
+  renderPrompt();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* 素材渲染 */
+function assetCard(a, showImg){
+  const img = (showImg && a.img) ? `<img src="${a.img}" alt="${a.name}">` : '';
+  const icon = a.img ? '' : '📄';
+  return `<a class="asset" href="${a.file}" download>
+    ${img}
+    <div class="meta"><b>${icon} ${a.name}</b><span>點擊下載</span></div>
+  </a>`;
+}
+function renderAssets(){
+  document.getElementById('assetGrid').innerHTML = ASSETS.map(a=>assetCard(a,true)).join('');
+  document.getElementById('styleAssetGrid').innerHTML = STYLE_ASSETS.map(a=>assetCard(a,true)).join('');
+  document.getElementById('docGrid').innerHTML = DOCS.map(a=>assetCard(a,false)).join('');
+}
+
+/* ============================================================
+   Word 技能檢核（可點擊打勾，localStorage 保存）
+   ============================================================ */
+const SKILLS_CORE = [
+  {n:'①', t:'我會打字和貼上文字', d:'把提示詞、詩句放進文件'},
+  {n:'②', t:'我會設定文字格式', d:'字型、字號、顏色'},
+  {n:'③', t:'我會把詩句「置中」對齊', d:''},
+  {n:'④', t:'我會「插入圖片」，並調整大小', d:''},
+  {n:'⑤', t:'我會設定圖片的「文繞圖 → 襯於文字下」', d:''},
+  {n:'⑥', t:'我會「插入文字方塊」，並移到想要的位置', d:''},
+  {n:'⑦', t:'我會儲存檔案', d:'檔名：P5A_學號_姓名_校慶海報'},
+];
+const SKILLS_ADV = [
+  {n:'⑧', t:'我會用「對齊」工具把物件排整齊', d:''},
+  {n:'⑨', t:'我會調整「行距」，讓詩句更好看', d:''},
+];
+const SKILL_KEY = 'kp134_word_skills';
+let skillState = {};
+try{ skillState = JSON.parse(localStorage.getItem(SKILL_KEY)) || {}; }catch(e){ skillState = {}; }
+
+function renderSkills(){
+  const core = document.getElementById('skillList');
+  const adv = document.getElementById('skillListAdv');
+  if(!core || !adv) return;
+  const itemHtml = (s, k) => `
+    <li class="skill-item" data-k="${k}">
+      <span class="box"></span>
+      <span class="s-txt"><b>${s.n} ${s.t}</b>${s.d?`<span class="s-note">${s.d}</span>`:''}</span>
+    </li>`;
+  core.innerHTML = SKILLS_CORE.map((s,i)=>itemHtml(s,'c'+i)).join('');
+  adv.innerHTML  = SKILLS_ADV.map((s,i)=>itemHtml(s,'a'+i)).join('');
+  document.querySelectorAll('#skillList .skill-item, #skillListAdv .skill-item').forEach(el=>{
+    const k = el.dataset.k;
+    if(skillState[k]) el.classList.add('done');
+    el.addEventListener('click',()=>{
+      el.classList.toggle('done');
+      skillState[k] = el.classList.contains('done');
+      try{ localStorage.setItem(SKILL_KEY, JSON.stringify(skillState)); }catch(e){}
+      updateSkillProgress();
+    });
+  });
+  updateSkillProgress();
+}
+
+function updateSkillProgress(){
+  const el = document.getElementById('skillProgress');
+  if(!el) return;
+  let done = 0;
+  SKILLS_CORE.forEach((s,i)=>{ if(skillState['c'+i]) done++; });
+  if(done === SKILLS_CORE.length){
+    el.textContent = '✅ 核心技能 7 / 7——全部做到，厲害！';
+  } else {
+    el.textContent = `核心技能：${done} / ${SKILLS_CORE.length}`;
+  }
+  el.classList.toggle('all', done === SKILLS_CORE.length);
+}
+
+/* 初始化 */
+document.getElementById('btnCopy').addEventListener('click', copyPrompt);
+document.getElementById('btnReset').addEventListener('click', resetAll);
+renderStyles();
+renderDims();
+updateHarmony();
+renderPrompt();
+renderAssets();
+renderSkills();
+</script>
+</body>
+</html>
